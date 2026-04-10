@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Smart Notes</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>📝 Smart Notes</h1>
+
+    <!-- 🔍 Search -->
+    <input type="text" id="search" placeholder="Search notes..." onkeyup="searchNotes()">
+
+    <!-- ➕ Add Note -->
+    <form action="/add" method="post" class="note-form">
+        <textarea name="text" placeholder="Write your note..." required></textarea>
+        <button type="submit">Add Note</button>
+    </form>
+
+    <!-- 📋 Notes List -->
+    <div class="notes">
+        {% for note in notes %}
+        <div class="note-card">
+
+            <p>{{ note.text }}</p>
+
+            <small>
+                📅 {{ note.created_at }}
+            </small>
+
+            <div class="actions">
+                <a href="/summary/{{ note.id }}">Summary</a>
+                <a href="/wordcount/{{ note.id }}">Words</a>
+
+                <!-- 🗑 Delete -->
+                <form action="/delete/{{ note.id }}" method="post">
+                    <button onclick="return confirm('Delete this note?')">Delete</button>
+                </form>
+            </div>
+
+            <!-- ✏️ Update -->
+            <form action="/update/{{ note.id }}" method="post" class="update-form">
+                <input type="text" name="text" placeholder="Update note...">
+                <button type="submit">Update</button>
+            </form>
+
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+function searchNotes() {
+    let input = document.getElementById("search").value.toLowerCase();
+    let notes = document.getElementsByClassName("note-card");
+
+    for (let i = 0; i < notes.length; i++) {
+        let text = notes[i].innerText.toLowerCase();
+        notes[i].style.display = text.includes(input) ? "" : "none";
+    }
+}
+</script>
+
+</body>
+</html>
